@@ -44,8 +44,15 @@ export class HomePage extends BasePage {
 
   // Public methods using the locators
   async navigateToHome(): Promise<void> {
-    await this.navigateTo("https://www.tui.co.uk/flight/");
-    await this.waitForPageLoad();
+    try {
+      await this.navigateTo("https://www.tui.co.uk/flight/");
+      await this.waitForPageLoad();
+    } catch (error) {
+      console.log("⚠️ Main TUI site not accessible, trying alternative...");
+      // Try alternative URL as mentioned in assignment
+      await this.navigateTo("https://www.tui.be/nl");
+      await this.waitForPageLoad();
+    }
   }
 
   async acceptCookies(): Promise<void> {

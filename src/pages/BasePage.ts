@@ -11,10 +11,20 @@ export abstract class BasePage {
    * Navigate to a specific URL
    */
   async navigateTo(url: string): Promise<void> {
-    await this.page.goto(url, {
-      timeout: 15000,
-    });
-    await this.page.waitForTimeout(2000); // Wait for dynamic content
+    try {
+      await this.page.goto(url, {
+        timeout: process.env.CI ? 30000 : 15000, // Longer timeout in CI
+        waitUntil: 'networkidle',
+      });
+      await this.page.waitForTimeout(2000); // Wait for dynamic content
+    } catch (error) {
+      console.log("⚠️ Navigation failed, trying alternative approach...");
+      // Try without waitUntil in case of network issues
+      await this.page.goto(url, {
+        timeout: process.env.CI ? 45000 : 20000,
+      });
+      await this.page.waitForTimeout(3000);
+    }
   }
 
   /**
