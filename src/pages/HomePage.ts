@@ -161,19 +161,39 @@ export class HomePage extends BasePage {
 
   // Utility methods for visibility checks
   async isDepartureFieldVisible(): Promise<boolean> {
-    return await this._departureAirportInput.isVisible();
+    try {
+      return await this._departureAirportInput.isVisible();
+    } catch (error) {
+      console.log('⚠️ Departure field visibility check failed:', error.message);
+      return false;
+    }
   }
 
   async isDestinationFieldVisible(): Promise<boolean> {
-    return await this._destinationAirportInput.isVisible();
+    try {
+      return await this._destinationAirportInput.isVisible();
+    } catch (error) {
+      console.log('⚠️ Destination field visibility check failed:', error.message);
+      return false;
+    }
   }
 
   async isDateFieldVisible(): Promise<boolean> {
-    return await this._departureDateInput.isVisible();
+    try {
+      return await this._departureDateInput.isVisible();
+    } catch (error) {
+      console.log('⚠️ Date field visibility check failed:', error.message);
+      return false;
+    }
   }
 
   async isRoomsGuestsFieldVisible(): Promise<boolean> {
-    return await this._roomsGuestsInput.isVisible();
+    try {
+      return await this._roomsGuestsInput.isVisible();
+    } catch (error) {
+      console.log('⚠️ Rooms & Guests field visibility check failed:', error.message);
+      return false;
+    }
   }
 
   async isSearchButtonClickable(): Promise<boolean> {

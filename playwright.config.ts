@@ -30,7 +30,15 @@ export default defineConfig({
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
         '--no-zygote',
-        '--disable-gpu'
+        '--disable-gpu',
+        '--disable-web-security',
+        '--disable-features=VizDisplayCompositor',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding',
+        '--disable-hang-monitor',
+        '--disable-prompt-on-repost',
+        '--disable-sync'
       ]
     }
   },
