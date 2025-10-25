@@ -52,8 +52,7 @@ export class HomePage extends BasePage {
     try {
       // Wait for cookie banner to appear
       await this._cookieAcceptButton.waitFor({
-        state: "visible"
-  
+        state: "visible",
       });
 
       // Handle any overlays first
@@ -268,7 +267,7 @@ export class HomePage extends BasePage {
   }
 
   // Helper methods
-  private async handleOverlays(): Promise<void> {
+  async handleOverlays(): Promise<void> {
     try {
       // Close any cookie banners
       const cookieBanner = this.page.locator(
@@ -288,6 +287,45 @@ export class HomePage extends BasePage {
         await crmPopup.click({ force: true });
         console.log("✅ CRM popup closed");
         await this.page.waitForTimeout(500);
+      }
+
+      // Close promotional popups (like "Sign up to win £500")
+      const promotionalPopup = this.page.locator(
+        'text="Sign up to win", text="win £500", text="Sign up to our newsletter", [class*="promo"], [class*="newsletter"], [class*="signup"], [class*="modal"]',
+      );
+      if (await promotionalPopup.isVisible()) {
+        console.log("🎯 Found promotional popup, attempting to close...");
+
+        // Try multiple close button selectors
+        const closeSelectors = [
+          'button:has-text("×")',
+          'button:has-text("X")',
+          '[aria-label*="close"]',
+          '[title*="close"]',
+          'button[class*="close"]',
+          'button[class*="dismiss"]',
+          ".close-button",
+          '[data-testid*="close"]',
+        ];
+
+        for (const selector of closeSelectors) {
+          const closeButton = this.page.locator(selector);
+          if (await closeButton.isVisible()) {
+            await closeButton.click({ force: true });
+            console.log(
+              `✅ Promotional popup closed using selector: ${selector}`,
+            );
+            await this.page.waitForTimeout(500);
+            break;
+          }
+        }
+
+        // If no close button found, try pressing Escape key
+        if (await promotionalPopup.isVisible()) {
+          await this.page.keyboard.press("Escape");
+          console.log("✅ Tried Escape key to close popup");
+          await this.page.waitForTimeout(500);
+        }
       }
 
       // Close any modal overlays

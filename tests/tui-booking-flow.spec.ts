@@ -41,6 +41,10 @@ test.describe('TUI Booking Flow - Complete Assignment Test', () => {
     await homePage.acceptCookies();
     console.log('✅ Cookies handled');
 
+    console.log('🚫 Test Step 2.5: Handle promotional popup');
+    await homePage.handleOverlays();
+    console.log('✅ Promotional popup handled');
+
     console.log('✈️ Test Step 3: Verify departure airport field is visible');
     expect(await homePage.isDepartureFieldVisible()).toBe(true);
     console.log('✅ Departure airport field is visible');
