@@ -275,7 +275,9 @@ export class HomePage extends BasePage {
       );
       if (await cookieBanner.isVisible()) {
         // Try to find and click Accept button specifically
-        const acceptButton = this.page.locator('button:has-text("Accept"), [role="button"]:has-text("Accept")');
+        const acceptButton = this.page.locator(
+          'button:has-text("Accept"), [role="button"]:has-text("Accept")',
+        );
         if (await acceptButton.isVisible()) {
           await acceptButton.click({ force: true });
           console.log("✅ Privacy popup accepted");
