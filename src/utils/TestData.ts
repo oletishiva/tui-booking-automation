@@ -9,28 +9,30 @@ export interface BookingData {
 
 export class TestDataGenerator {
   private static readonly DEPARTURE_AIRPORTS = [
-    'London Heathrow',
-    'London Gatwick', 
-    'London Stansted',
-    'Manchester',
-    'Birmingham',
-    'Glasgow',
-    'Edinburgh',
-    'Bristol'
+    "London Heathrow",
+    "London Gatwick",
+    "London Stansted",
+    "Manchester",
+    "Birmingham",
+    "Glasgow",
+    "Edinburgh",
+    "Bristol",
   ];
 
   private static readonly DESTINATION_AIRPORTS = [
-    'Spain - Costa del Sol',
-    'Spain - Majorca',
-    'Spain - Tenerife',
-    'Greece - Crete',
-    'Greece - Rhodes',
-    'Turkey - Antalya',
-    'Cyprus - Paphos',
-    'Portugal - Algarve'
+    "Spain - Costa del Sol",
+    "Spain - Majorca",
+    "Spain - Tenerife",
+    "Greece - Crete",
+    "Greece - Rhodes",
+    "Turkey - Antalya",
+    "Cyprus - Paphos",
+    "Portugal - Algarve",
   ];
 
-  private static readonly CHILD_AGES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+  private static readonly CHILD_AGES = [
+    2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+  ];
 
   static generateBookingData(): BookingData {
     const departureAirport = this.getRandomDepartureAirport();
@@ -46,16 +48,20 @@ export class TestDataGenerator {
       departureDate,
       adults,
       children,
-      childAge
+      childAge,
     };
   }
 
   static getRandomDepartureAirport(): string {
-    return this.DEPARTURE_AIRPORTS[Math.floor(Math.random() * this.DEPARTURE_AIRPORTS.length)];
+    return this.DEPARTURE_AIRPORTS[
+      Math.floor(Math.random() * this.DEPARTURE_AIRPORTS.length)
+    ];
   }
 
   static getRandomDestinationAirport(): string {
-    return this.DESTINATION_AIRPORTS[Math.floor(Math.random() * this.DESTINATION_AIRPORTS.length)];
+    return this.DESTINATION_AIRPORTS[
+      Math.floor(Math.random() * this.DESTINATION_AIRPORTS.length)
+    ];
   }
 
   static getRandomChildAge(): number {
@@ -65,11 +71,11 @@ export class TestDataGenerator {
   static getFutureDate(days: number): string {
     const date = new Date();
     date.setDate(date.getDate() + days);
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   }
 
   static logBookingData(data: BookingData): void {
-    console.log('📋 Generated Booking Data:');
+    console.log("📋 Generated Booking Data:");
     console.log(`   ✈️  Departure Airport: ${data.departureAirport}`);
     console.log(`   🏖️  Destination Airport: ${data.destinationAirport}`);
     console.log(`   📅  Departure Date: ${data.departureDate}`);

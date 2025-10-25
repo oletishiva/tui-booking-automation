@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from "@playwright/test";
 
 export abstract class BasePage {
   protected page: Page;
@@ -11,9 +11,9 @@ export abstract class BasePage {
    * Navigate to a specific URL
    */
   async navigateTo(url: string): Promise<void> {
-    await this.page.goto(url, { 
-      waitUntil: 'domcontentloaded',
-      timeout: 30000 
+    await this.page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: 30000,
     });
     await this.page.waitForTimeout(2000); // Wait for dynamic content
   }
@@ -23,9 +23,9 @@ export abstract class BasePage {
    */
   async waitForPageLoad(): Promise<void> {
     try {
-      await this.page.waitForLoadState('networkidle', { timeout: 10000 });
+      await this.page.waitForLoadState("networkidle", { timeout: 10000 });
     } catch (error) {
-      console.log('⚠️ Network idle timeout, continuing...');
+      console.log("⚠️ Network idle timeout, continuing...");
     }
   }
 
@@ -33,9 +33,9 @@ export abstract class BasePage {
    * Take a screenshot for debugging
    */
   async takeScreenshot(filename: string): Promise<void> {
-    await this.page.screenshot({ 
-      path: `screenshots/${filename}`, 
-      fullPage: true 
+    await this.page.screenshot({
+      path: `screenshots/${filename}`,
+      fullPage: true,
     });
   }
 
@@ -44,8 +44,7 @@ export abstract class BasePage {
    */
   async savePageSource(filename: string): Promise<void> {
     const content = await this.page.content();
-    const fs = require('fs');
+    const fs = await import("fs");
     fs.writeFileSync(filename, content);
   }
 }
-
