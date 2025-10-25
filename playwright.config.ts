@@ -21,8 +21,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     headless: process.env.CI ? true : false,
-    actionTimeout: 60000,
-    navigationTimeout: 60000,
+    actionTimeout: 30000,
+    navigationTimeout: 30000,
     launchOptions: {
       args: [
         '--no-sandbox',

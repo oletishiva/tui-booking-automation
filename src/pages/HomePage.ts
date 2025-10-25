@@ -269,13 +269,20 @@ export class HomePage extends BasePage {
   // Helper methods
   async handleOverlays(): Promise<void> {
     try {
-      // Close any cookie banners
+      // Close any cookie banners and privacy popups
       const cookieBanner = this.page.locator(
-        '#cmNotifyBanner, .cmNotifyBanner, [id*="cookie"], [class*="cookie"], [data-testid*="cookie"]',
+        '#cmNotifyBanner, .cmNotifyBanner, [id*="cookie"], [class*="cookie"], [data-testid*="cookie"], text="We value your privacy", text="Accept", text="Manage", text="Decline"',
       );
       if (await cookieBanner.isVisible()) {
-        await cookieBanner.click({ force: true });
-        console.log("✅ Cookie banner closed");
+        // Try to find and click Accept button specifically
+        const acceptButton = this.page.locator('button:has-text("Accept"), [role="button"]:has-text("Accept")');
+        if (await acceptButton.isVisible()) {
+          await acceptButton.click({ force: true });
+          console.log("✅ Privacy popup accepted");
+        } else {
+          await cookieBanner.click({ force: true });
+          console.log("✅ Cookie banner closed");
+        }
         await this.page.waitForTimeout(500);
       }
 

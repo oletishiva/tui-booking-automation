@@ -12,10 +12,9 @@ export abstract class BasePage {
    */
   async navigateTo(url: string): Promise<void> {
     await this.page.goto(url, {
-      waitUntil: "domcontentloaded",
-      timeout: 30000,
+      timeout: 15000,
     });
-    await this.page.waitForTimeout(5000); // Wait for dynamic content
+    await this.page.waitForTimeout(2000); // Wait for dynamic content
   }
 
   /**
