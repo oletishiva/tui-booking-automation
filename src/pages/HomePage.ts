@@ -212,7 +212,10 @@ export class HomePage extends BasePage {
     try {
       return await this._departureAirportInput.isVisible();
     } catch (error) {
-      console.log("⚠️ Departure field visibility check failed:", error.message);
+      console.log(
+        "⚠️ Departure field visibility check failed:",
+        error instanceof Error ? error.message : String(error),
+      );
       return false;
     }
   }
@@ -223,7 +226,7 @@ export class HomePage extends BasePage {
     } catch (error) {
       console.log(
         "⚠️ Destination field visibility check failed:",
-        error.message,
+        error instanceof Error ? error.message : String(error),
       );
       return false;
     }
@@ -233,7 +236,10 @@ export class HomePage extends BasePage {
     try {
       return await this._departureDateInput.isVisible();
     } catch (error) {
-      console.log("⚠️ Date field visibility check failed:", error.message);
+      console.log(
+        "⚠️ Date field visibility check failed:",
+        error instanceof Error ? error.message : String(error),
+      );
       return false;
     }
   }
@@ -244,7 +250,7 @@ export class HomePage extends BasePage {
     } catch (error) {
       console.log(
         "⚠️ Rooms & Guests field visibility check failed:",
-        error.message,
+        error instanceof Error ? error.message : String(error),
       );
       return false;
     }
