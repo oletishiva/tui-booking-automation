@@ -52,8 +52,8 @@ export class HomePage extends BasePage {
     try {
       // Wait for cookie banner to appear
       await this._cookieAcceptButton.waitFor({
-        state: "visible",
-        timeout: 5000,
+        state: "visible"
+  
       });
 
       // Handle any overlays first

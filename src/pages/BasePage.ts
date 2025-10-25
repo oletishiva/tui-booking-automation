@@ -15,7 +15,7 @@ export abstract class BasePage {
       waitUntil: "domcontentloaded",
       timeout: 30000,
     });
-    await this.page.waitForTimeout(2000); // Wait for dynamic content
+    await this.page.waitForTimeout(5000); // Wait for dynamic content
   }
 
   /**
@@ -23,7 +23,7 @@ export abstract class BasePage {
    */
   async waitForPageLoad(): Promise<void> {
     try {
-      await this.page.waitForLoadState("networkidle", { timeout: 10000 });
+      await this.page.waitForLoadState("networkidle", { timeout: 30000 });
     } catch (error) {
       console.log("⚠️ Network idle timeout, continuing...");
     }

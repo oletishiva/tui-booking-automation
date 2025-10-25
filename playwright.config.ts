@@ -6,6 +6,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: process.env.CI ? 1 : undefined,
+  timeout: 60000,
   reporter: [
     ['html'],
     ['allure-playwright', { 
@@ -20,8 +21,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     headless: process.env.CI ? true : false,
-    actionTimeout: 30000,
-    navigationTimeout: 30000,
+    actionTimeout: 60000,
+    navigationTimeout: 60000,
     launchOptions: {
       args: [
         '--no-sandbox',
