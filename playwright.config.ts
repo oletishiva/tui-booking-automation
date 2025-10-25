@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { TestConfig } from './src/config/testConfig';
 
 export default defineConfig({
   testDir: './tests',
@@ -6,7 +7,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: process.env.CI ? 1 : undefined,
-  timeout: process.env.CI ? 120000 : 60000, // Longer timeout in CI
+  timeout: TestConfig.globalTimeout,
   reporter: [
     ['html'],
     ['allure-playwright', { 
@@ -21,8 +22,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     headless: process.env.CI ? true : false,
-    actionTimeout: process.env.CI ? 60000 : 30000,
-    navigationTimeout: process.env.CI ? 60000 : 30000,
+    actionTimeout: TestConfig.actionTimeout,
+    navigationTimeout: TestConfig.navigationTimeout,
     launchOptions: {
       args: [
         '--no-sandbox',

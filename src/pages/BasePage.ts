@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { TestConfig } from "../config/testConfig";
 
 export abstract class BasePage {
   protected page: Page;
@@ -13,15 +14,15 @@ export abstract class BasePage {
   async navigateTo(url: string): Promise<void> {
     try {
       await this.page.goto(url, {
-        timeout: process.env.CI ? 30000 : 15000, // Longer timeout in CI
-        waitUntil: 'networkidle',
+        timeout: TestConfig.navigationTimeout,
+        // waitUntil: 'networkidle', // Removed due to proxy/network issues
       });
       await this.page.waitForTimeout(2000); // Wait for dynamic content
     } catch (error) {
       console.log("⚠️ Navigation failed, trying alternative approach...");
       // Try without waitUntil in case of network issues
       await this.page.goto(url, {
-        timeout: process.env.CI ? 45000 : 20000,
+        timeout: TestConfig.navigationTimeout + 15000,
       });
       await this.page.waitForTimeout(3000);
     }
@@ -31,11 +32,13 @@ export abstract class BasePage {
    * Wait for page to be fully loaded
    */
   async waitForPageLoad(): Promise<void> {
-    try {
-      await this.page.waitForLoadState("networkidle", { timeout: 10000 });
-    } catch (error) {
-      console.log("⚠️ Network idle timeout, continuing...");
-    }
+    // Commented out due to proxy/network issues
+    // try {
+    //   await this.page.waitForLoadState("networkidle", { timeout: TestConfig.networkIdleTimeout });
+    // } catch (error) {
+    //   console.log("⚠️ Network idle timeout, continuing...");
+    // }
+    console.log("⚠️ Skipping network idle wait due to proxy issues");
   }
 
   /**
