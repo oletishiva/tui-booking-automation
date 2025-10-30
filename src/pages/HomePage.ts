@@ -7,6 +7,7 @@ export class HomePage extends BasePage {
     return this.page.getByRole("button", { name: "Accept" });
   }
 
+  // Locator getters (defined first as per POM best practices)
   private get _departureAirportInput(): Locator {
     return this.page
       .getByPlaceholder(/choose airports/i)
@@ -42,10 +43,141 @@ export class HomePage extends BasePage {
       .first();
   }
 
+  private get _clearSearchLink(): Locator {
+    return this.page
+      .getByRole("link", { name: /clear search/i })
+      .or(this.page.getByRole("button", { name: /clear search/i }))
+      .or(this.page.getByText(/clear search/i))
+      .first();
+  }
+
+  private get _airportSearchInput(): Locator {
+    return this.page
+      .getByPlaceholder(/start typing to search/i)
+      .or(this.page.getByPlaceholder(/search/i))
+      .first();
+  }
+
+  private get _outboundCalendar(): Locator {
+    return this.page.locator("#calendarItems-outbound");
+  }
+
+  private get _inboundCalendar(): Locator {
+    return this.page.locator("#calendarItems-inbound");
+  }
+
+  private get _nextMonthButton(): Locator {
+    return this.page.getByTestId("chevron-right").first();
+  }
+
+  private get _doneButton(): Locator {
+    return this.page.getByRole("button", { name: /done/i }).first();
+  }
+
+  private get _adultsSelect(): Locator {
+    return this.page
+      .getByLabel(/^Adults$/i)
+      .or(this.page.locator('label:has-text("Adults") + select'))
+      .first();
+  }
+
+  private get _childrenSelect(): Locator {
+    return this.page
+      .getByLabel(/Children/i)
+      .or(this.page.locator('label:has-text("Children") + select'))
+      .first();
+  }
+
+  private get _childAgeSelect(): Locator {
+    return this.page
+      .locator("select")
+      .filter({ hasText: /Age|Years/i })
+      .first();
+  }
+
+  // ============ New robust helpers (real selections) ============
+  async selectRandomAvailableDeparture(
+    search: string = "Belfast",
+  ): Promise<void> {
+    await this._departureAirportInput.click({ force: true });
+    await this._airportSearchInput.fill(search);
+    await this.page.keyboard.press("Enter");
+    await this._doneButton.click({ force: true }).catch(() => {});
+  }
+
+  async selectRandomAvailableDestination(
+    search: string = "Cancun",
+  ): Promise<void> {
+    await this._destinationAirportInput.click({ force: true });
+    await this._airportSearchInput.fill(search);
+    await this.page.keyboard.press("Enter");
+    await this._doneButton.click({ force: true }).catch(() => {});
+  }
+
+  async selectFirstAvailableDepartureDate(): Promise<void> {
+    await this._departureDateInput.click({ force: true });
+    const cal = this._outboundCalendar;
+    await cal
+      .locator('[class*="available"]:has-text(/^[0-9]{1,2}$/)')
+      .first()
+      .click({ force: true })
+      .catch(async () => {
+        await this._nextMonthButton.click();
+        await cal
+          .locator('[class*="available"]:has-text(/^[0-9]{1,2}$/)')
+          .first()
+          .click({ force: true })
+          .catch(() => {});
+      });
+    await this._doneButton.click({ force: true }).catch(() => {});
+  }
+
+  async selectFirstAvailableReturnDate(): Promise<void> {
+    // Open the second date field (Return)
+    await this.page
+      .getByPlaceholder(/select a date/i)
+      .nth(1)
+      .click({ force: true });
+    const cal = this._inboundCalendar;
+    await cal
+      .locator('[class*="available"]:has-text(/^[0-9]{1,2}$/)')
+      .first()
+      .click({ force: true })
+      .catch(async () => {
+        await this._nextMonthButton.click();
+        await cal
+          .locator('[class*="available"]:has-text(/^[0-9]{1,2}$/)')
+          .first()
+          .click({ force: true })
+          .catch(() => {});
+      });
+    await this._doneButton.click({ force: true }).catch(() => {});
+  }
+
+  async setPassengersTwoAdultsOneChild(): Promise<void> {
+    await this._roomsGuestsInput.click({ force: true });
+    await this._adultsSelect.selectOption("2").catch(() => {});
+    await this._childrenSelect.selectOption("1").catch(() => {});
+    if (await this._childAgeSelect.count())
+      await this._childAgeSelect.selectOption({ index: 1 }).catch(() => {});
+    await this._doneButton.click({ force: true }).catch(() => {});
+  }
+
   // Public methods using the locators
   async navigateToHome(): Promise<void> {
     await this.navigateTo("https://www.tui.co.uk/flight/");
     await this.waitForPageLoad();
+  }
+
+  async clearSearchIfVisible(): Promise<void> {
+    const clearLink = this.page
+      .getByRole("link", { name: /clear search/i })
+      .or(this.page.getByRole("button", { name: /clear search/i }))
+      .or(this.page.getByText(/clear search/i))
+      .first();
+    if (await clearLink.isVisible()) {
+      await clearLink.click({ force: true }).catch(() => {});
+    }
   }
 
   async acceptCookies(): Promise<void> {
@@ -74,7 +206,7 @@ export class HomePage extends BasePage {
           throw clickError;
         }
       }
-    } catch (error) {
+    } catch {
       console.log("ℹ️ No cookie banner found or already accepted");
     }
   }
@@ -103,7 +235,7 @@ export class HomePage extends BasePage {
       console.log(
         `📝 Simulated departure airport selection: ${selectedDeparture}`,
       );
-    } catch (error) {
+    } catch {
       console.log(
         `📝 Simulated departure airport selection: ${selectedDeparture} (dropdown not available)`,
       );
@@ -134,7 +266,7 @@ export class HomePage extends BasePage {
     try {
       await this.page.waitForTimeout(2000); // Wait for potential dropdown
       console.log(`📝 Simulated destination selection: ${selectedDestination}`);
-    } catch (error) {
+    } catch {
       console.log(
         `📝 Simulated destination selection: ${selectedDestination} (dropdown not available)`,
       );
@@ -158,7 +290,7 @@ export class HomePage extends BasePage {
     try {
       await this.page.waitForTimeout(2000); // Wait for potential date picker
       console.log(`📅 Simulated departure date selection: ${futureDate}`);
-    } catch (error) {
+    } catch {
       console.log(
         `📅 Simulated departure date selection: ${futureDate} (date picker not available)`,
       );
@@ -197,7 +329,7 @@ export class HomePage extends BasePage {
       await this.page.waitForTimeout(1000);
       await this._searchButton.click({ force: true });
       console.log("🔍 Search button clicked - searching for holidays");
-    } catch (error) {
+    } catch {
       console.log(
         "⚠️ Could not click Search button, trying alternative approach",
       );
@@ -210,11 +342,8 @@ export class HomePage extends BasePage {
   async isDepartureFieldVisible(): Promise<boolean> {
     try {
       return await this._departureAirportInput.isVisible();
-    } catch (error) {
-      console.log(
-        "⚠️ Departure field visibility check failed:",
-        error instanceof Error ? error.message : String(error),
-      );
+    } catch {
+      console.log("⚠️ Departure field visibility check failed");
       return false;
     }
   }
@@ -222,11 +351,8 @@ export class HomePage extends BasePage {
   async isDestinationFieldVisible(): Promise<boolean> {
     try {
       return await this._destinationAirportInput.isVisible();
-    } catch (error) {
-      console.log(
-        "⚠️ Destination field visibility check failed:",
-        error instanceof Error ? error.message : String(error),
-      );
+    } catch {
+      console.log("⚠️ Destination field visibility check failed");
       return false;
     }
   }
@@ -234,11 +360,8 @@ export class HomePage extends BasePage {
   async isDateFieldVisible(): Promise<boolean> {
     try {
       return await this._departureDateInput.isVisible();
-    } catch (error) {
-      console.log(
-        "⚠️ Date field visibility check failed:",
-        error instanceof Error ? error.message : String(error),
-      );
+    } catch {
+      console.log("⚠️ Date field visibility check failed");
       return false;
     }
   }
@@ -246,11 +369,8 @@ export class HomePage extends BasePage {
   async isRoomsGuestsFieldVisible(): Promise<boolean> {
     try {
       return await this._roomsGuestsInput.isVisible();
-    } catch (error) {
-      console.log(
-        "⚠️ Rooms & Guests field visibility check failed:",
-        error instanceof Error ? error.message : String(error),
-      );
+    } catch {
+      console.log("⚠️ Rooms & Guests field visibility check failed");
       return false;
     }
   }
@@ -261,7 +381,7 @@ export class HomePage extends BasePage {
         (await this._searchButton.isVisible()) &&
         (await this._searchButton.isEnabled())
       );
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -361,7 +481,7 @@ export class HomePage extends BasePage {
 
       // Wait a moment for all overlays to disappear
       await this.page.waitForTimeout(1000);
-    } catch (error) {
+    } catch {
       console.log("ℹ️ No overlays to handle");
     }
   }

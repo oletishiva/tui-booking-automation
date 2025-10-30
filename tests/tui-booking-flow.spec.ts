@@ -11,8 +11,8 @@ test.describe('TUI Booking Flow - Complete Assignment Test', () => {
     // Set UK country cookie to ensure proper functionality
     await context.addCookies([
       { 
-        name: 'selectedCountry', 
-        value: 'GB', 
+        name: "selectedCountry", 
+        value: "GB", 
         domain: '.tui.co.uk',
         path: '/'
       }

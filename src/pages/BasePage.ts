@@ -18,7 +18,7 @@ export abstract class BasePage {
         // waitUntil: 'networkidle', // Removed due to proxy/network issues
       });
       await this.page.waitForTimeout(2000); // Wait for dynamic content
-    } catch (error) {
+    } catch {
       console.log("⚠️ Navigation failed, trying alternative approach...");
       // Try without waitUntil in case of network issues
       await this.page.goto(url, {

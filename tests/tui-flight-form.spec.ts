@@ -8,8 +8,8 @@ test.describe('TUI Flight Form Tests', () => {
     // Set UK country cookie to ensure proper functionality
     await context.addCookies([
       { 
-        name: 'selectedCountry', 
-        value: 'GB', 
+        name: "selectedCountry", 
+        value: "GB", 
         domain: '.tui.co.uk',
         path: '/'
       }
